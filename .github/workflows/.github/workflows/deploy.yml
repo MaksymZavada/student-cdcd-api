@@ -1,0 +1,65 @@
+name: Deploy to Elastic Beanstalk
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+      - main
+
+jobs:
+  deploy-dev:
+    if: github.event.pull_request.merged == true && github.base_ref == 'develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Deploy to Elastic Beanstalk (DEV)
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+          application_name: Student-cdcd-api
+          environment_name: Student-cdcd-api-env-dev
+          version_label: dev-${{ github.sha }}
+          deployment_package: .
+
+  deploy-prod:
+    if: github.event.pull_request.merged == true && github.base_ref == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Deploy to Elastic Beanstalk (PROD)
+        uses: einaregilsson/beanstalk-deploy@v21
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+          application_name: Student-cdcd-api
+          environment_name: Student-cdcd-api-env-prod
+          version_label: prod-${{ github.sha }}
+          deployment_package: .
