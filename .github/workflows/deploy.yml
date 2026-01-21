@@ -8,18 +8,20 @@ on:
       - main
 
 jobs:
-    deploy-dev:
-      if: github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref == 'develop'
+  deploy-dev:
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base_ref == 'develop'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Deploy to DEV
         run: echo "Deploying to DEV environment"
 
-    deploy-prod:
-      if: github.event.pull_request.merged == true &&
-      github.event.pull_request.base.ref == 'main'
+  deploy-prod:
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base_ref == 'main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
