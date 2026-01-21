@@ -1,0 +1,27 @@
+name: Deploy to Elastic Beanstalk
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+      - main
+
+jobs:
+    deploy-dev:
+      if: github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'develop'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to DEV
+        run: echo "Deploying to DEV environment"
+
+    deploy-prod:
+      if: github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy to PROD
+        run: echo "Deploying to PROD environment"
